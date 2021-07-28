@@ -21,7 +21,7 @@ var CAMERA=function(){
 	CAMERA();
 //});
 
-// document.getElementById("web_stream")
+document.getElementById("logo").src = "img/logo.png"
 
 
 

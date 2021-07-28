@@ -14,66 +14,141 @@
 <body>
   <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
   <script src="static/js/script.js"></script>
-  <script>
-    layui.use(['layer', 'form'], function(){
-      var layer = layui.layer
-      ,form = layui.form;
+
+  <!-- 定义主界面 -->
+<div class="layui-layout layui-layout-admin">
+
+  <!-- 界面顶边栏 -->
+  <div class="layui-header">
+    <div class="layui-logo layui-hide-xs layui-bg-black">GKY-AILab</div>
+
+    <!-- 头部区域（可配合layui 已有的水平导航） -->
+    <ul class="layui-nav layui-layout-left">
+      <!-- 移动端显示 -->
+      <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">
+        <i class="layui-icon layui-icon-spread-left"></i>
+      </li>
       
-      layer.msg('Style Transfer Application');
-    });
-  </script> 
+      <!-- <li class="layui-nav-item layui-hide-xs"><a href="">nav 1</a></li>
+      <li class="layui-nav-item layui-hide-xs"><a href="">nav 2</a></li>
+      <li class="layui-nav-item layui-hide-xs"><a href="">nav 3</a></li> -->
 
-  <div class="layui-panel">
-    <ul class="layui-menu" id="docDemoMenu1">
-      <li lay-options="{id: 100}">
-        <div class="layui-menu-body-title">menu item 1</div>
-      </li>
-      <li lay-options="{id: 101}">
-        <div class="layui-menu-body-title">
-          <a href="#">menu item 2 <span class="layui-badge-dot"></span></a>
-        </div>
-      </li>
-      <li class="layui-menu-item-divider"></li>
-      <li class="layui-menu-item-group layui-menu-item-down" lay-options="{type: 'group'}">
-        <div class="layui-menu-body-title">
-          menu item 3 group <i class="layui-icon layui-icon-up"></i>
-        </div>
-        <ul>
-          <li lay-options="{id: 1031}">menu item 3-1</li>
-          <li lay-options="{id: 1032}">
-            <div class="layui-menu-body-title">menu item 3-2</div>
-          </li>
-        </ul>
-      </li>
-      <li class="layui-menu-item-divider"></li>
-      <li lay-options="{id: 104}">
-        <div class="layui-menu-body-title">menu item 4</div>
-      </li>
-      <li class="layui-menu-item-parent" lay-options="{type: 'parent'}">
-        <div class="layui-menu-body-title">
-          menu item 5 
-          <i class="layui-icon layui-icon-right"></i>
-        </div>
-        <div class="layui-panel layui-menu-body-panel">
-          <ul>
-            <li lay-options="{id: 1051}">
-              <div class="layui-menu-body-title">menu item 5-1</div>
-            </li>
-            <li lay-options="{id: 1051}">
-              <div class="layui-menu-body-title">menu item 5-2</div>
-            </li>
-          </ul>
-        </div>
-      </li>
-      <li lay-options="{id: 106}">
-        <div class="layui-menu-body-title">menu item 6</div>
-      </li>
-    </ul>
-  </div>
+      <!-- <li class="layui-nav-item">
+        <a href="javascript:;">nav groups<i class="layui-icon layui-icon-down layui-nav-more"></i></a>
+        <dl class="layui-nav-child layui-anim layui-anim-upbit">
+          <dd><a href="">menu 11</a></dd>
+          <dd><a href="">menu 22</a></dd>
+          <dd><a href="">menu 33</a></dd>
+        </dl>
+      </li> -->
+  </div>    
 
-  <div>
-    <img src="{{ url_for('style_transfer_stream') }}" width="720" height="480">
+<!-- 侧边栏 -->
+<div class="layui-side layui-bg-black">
+  <div class="layui-side-scroll">
+    <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+    <ul class="layui-nav layui-nav-tree" lay-filter="test">
+      <!-- 这个表单是会将子菜单列出来 -->
+      <!-- <li class="layui-nav-item layui-nav-itemed">  
+        <a class="" href="javascript:;">menu group 1<i class="layui-icon layui-icon-down layui-nav-more"></i></a>
+        <dl class="layui-nav-child">
+          <dd><a href="javascript:;">menu 1</a></dd>
+          <dd><a href="javascript:;">menu 2</a></dd>
+          <dd><a href="javascript:;">menu 3</a></dd>
+          <dd><a href="">the links</a></dd>
+        </dl>
+      </li> -->
+
+      <!-- 这个子菜单不会列出来 -->
+      <li class="layui-nav-item"><a href="javascript:;">About</a></li>
+      <li class="layui-nav-item"><a href="">Tutorial</a></li>
+      <li class="layui-nav-item">
+        <a href="javascript:;">Application<i class="layui-icon layui-icon-down layui-nav-more"></i></a>
+        <dl class="layui-nav-child">
+          <dd><a href="face_recognition">Face-recognition</a></dd>
+          <dd><a href="style_transfer">Style-transfer</a></dd>
+          <dd><a href="">other link</a></dd>
+        </dl>
+      </li>
+    <span class="layui-nav-bar" style="top: 55px; height: 0px; opacity: 0;"></span></ul>
   </div>
-    
+</div>
+
+  <!-- 内容主体区域 -->
+<div class="layui-body">
+  <!-- 这边是风格迁移功能栏 -->
+
+  <!-- 功能栏占一块，避免太过突兀 -->
+  <div class="layui-col-lg12" style="height: 50px; margin: 0;"></div>
+
+  <div class="layui-container">  
+    <!-- 第一行数据 包括图片和 一些按钮 -->
+    <div class="layui-row" style="height: 400px;">
+      <div class="layui-col-md8">
+        <div style="height: 400px;">
+          <img src="{{ url_for('webcam_stream') }}" id="stream">
+        </div>
+      </div>
+
+      <div class="layui-col-md4"> 
+        <div class="layui-btn-container" style="height: auto; width: auto;">  
+          <button type="button" class="layui-btn layui-btn-lg" style="height: 80px; width: 25%;" id="transfer1" onclick="switch_to_transfer_stream()">风格1</button>
+          <button type="button" class="layui-btn layui-btn-lg" style="height: 80px; width: 25%;" id="transfer2">风格2</button>
+        </div> 
+        <div class="layui-btn-container" style="height: auto; width: auto;">  
+          <button type="button" class="layui-btn layui-btn-lg" style="height: 80px; width: 25%;" id="transfer3">风格3</button>
+          <button type="button" class="layui-btn layui-btn-lg" style="height: 80px; width: 25%;" id="transfer4">风格4</button>
+        </div>
+        <div class="layui-btn-container" style="height: auto; width: auto;">  
+          <button type="button" class="layui-btn layui-btn-lg" style="height: 80px; width: 25%;" id="transfer5">风格5</button>
+          <button type="button" class="layui-btn layui-btn-lg" style="height: 80px; width: 25%;" id="transfer6">风格6</button>
+        </div>
+        <div class="layui-btn-container" style="height: auto; width: auto;">  
+          <button type="button" class="layui-btn layui-btn-lg" style="height: 80px; width: 25%;" id="transfer7">风格7</button>
+          <button type="button" class="layui-btn layui-btn-lg" style="height: 80px; width: 25%;" id="transfer8">风格8</button>
+        </div>
+        <div class="layui-btn-container" style="height: auto; width: auto;">
+          <button type="button" class="layui-btn layui-btn-lg" style="height: 50px; width: 53%;">录制</button>
+        </div>
+        <div class="layui-btn-container" style="height: auto; width: auto;">  
+          <button type="button" class="layui-btn layui-btn-lg" style="height: 50px; width: 53%;" id="transfer0" onclick="switch_to_orgin_stream()">还原</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="layui-col-lg12" style="height: 50px; margin: 0;"></div>
+
+    <!-- 第二行数据 -->
+    <div class="layui-row" style="height: 400px;">
+      <div class="layui-btn-container" style="height: auto; width: auto;">
+        <button type="button" class="layui-btn layui-btn-lg" style="height: auto; width: 20%;">背景提取</button>
+        <button type="button" class="layui-btn layui-btn-lg" style="height: auto; width: 20%;">选择</button>
+      </div>
+    </div>
+
+    <!-- 底边行数据 -->
+
+  <!-- 底边栏 -->
+  <!-- <div class="layui-footer footer footer-demo">
+    <div class="layui-container">
+      <p>© 2021 <a href="/">layui.com</a> MIT license</p>
+    </div>
+  </div> -->
+
+</div>
+</div> <!-- 主界面 结束 -->
+
+<script>
+  function switch_to_orgin_stream() {
+      document.getElementById("stream").src ="{{ url_for('webcam_stream') }}"; 
+    }
+
+  function switch_to_transfer_stream() {
+    document.getElementById("stream").src ="{{ url_for('style_transfer_stream') }}"; 
+  }
+
+
+</script>
 </body>
+
 </html>

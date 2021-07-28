@@ -1,4 +1,4 @@
-import cv2
+import cv2, os
 import pickle
 from imutils.video import WebcamVideoStream
 import face_recognition
@@ -8,13 +8,14 @@ from model.style_transfer import transformer, utils
 
 class VideoCamera(object):
     def __init__(self):
-        # Using OpenCV to capture from device 0. If you have trouble capturing
-        # from a webcam, comment the line below out and use a video file
-        # instead.
-
         # Device
         device = ("cuda" if torch.cuda.is_available() else "cpu")
         self.device = device
+
+        # init recording
+        self.with_recording = False
+        self.recording_index = 0
+        self.recording_init()
 
         # Load Transformer Network
         print("Loading Transformer Network")
@@ -27,10 +28,48 @@ class VideoCamera(object):
         self.net = net
         print("Done Loading Transformer Network")
 
-        # Read video stream
-        self.stream = WebcamVideoStream(src=0).start()
+        # Face Recognition model 
         with open("trained_knn_model.clf", 'rb') as f:
             self.knn_clf = pickle.load(f)
+        
+        # open camera
+        self.stream = WebcamVideoStream(src=0).start()
+    
+    def open_camera(self):
+        # Read video stream
+        self.stream = WebcamVideoStream(src=0).start()
+    
+    def close_camera(self):
+        self.with_recording = False
+        self.recording_index = 0
+        self.stream.release()
+
+    def recording_init(self):
+        # init recording path
+        self.with_recording = True
+        self.recording_index = 0
+        self.recording_video_path = os.path.join(os.getcwd(), 'video')
+        self.recording_video_frames = os.path.join(self.recording_video_path, 'buffer')
+
+        file_list = os.listdir(self.recording_video_frames)
+        for file in file_list:
+            frame = os.path.join(self.recording_video_path, file)
+            if os.path.exists(frame):
+                os.remove(frame)
+
+    
+    def recording(self, image):
+        # recording each image
+        frame_name = "{:08d}.png".format(self.recording_index)
+        frame_name = os.path.join(self.recording_video_frames, frame_name)
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+        cv2.imwrite(frame_name, image)
+        self.recording_index += 1
+    
+    def recording_end(self):
+        # recording end
+        self.with_recording = False
+        self.recording_index = 0
 
     def __del__(self):
         self.stream.stop()
@@ -93,13 +132,13 @@ class VideoCamera(object):
     
     def get_webcam_stream(self):
         """Get a origin image from webcam"""
+        self.recording_init()
         image = self.stream.read()
         ret, jpeg = cv2.imencode('.jpg', image)
         data = []
         data.append(jpeg.tobytes())
         return data
 
-    
     def transfer_image(self, image):
         "transfer function"
         # Free-up unneeded cuda memory
@@ -113,8 +152,12 @@ class VideoCamera(object):
     def get_style_transfer_frame(self):
         "Style Transfer Function"
         image = self.stream.read()
-        cv2.imwrite("./static/buffer/web_stream.png", image)  # Save a temprory image for origin stream
         generated_image = self.transfer_image(image)
+
+        self.with_recording = True
+        if self.with_recording:
+            self.recording(generated_image)
+            
         ret, jpeg = cv2.imencode('.jpg', generated_image)
         data = []
         data.append(jpeg.tobytes())
