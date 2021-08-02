@@ -86,26 +86,31 @@ class VideoCamera(object):
         generated_image = utils.ttoi(generated_tensor.detach())
         return generated_image
     
-    def get_webcam_stream(self):
-        """Get a origin image from webcam"""
-        _, image = self.stream.read()
+    def get_frame(self):
+        success, image = self.stream.read()
+        return success, image
+
+    def img_to_bytes(self, success, image):
         ret, jpeg = cv2.imencode('.jpg', image)
         data = []
         data.append(jpeg.tobytes())
-        return _, data
+        return success, data
+
+    def get_webcam_stream(self):
+        """Get a origin image from webcam"""
+        success, image = self.get_frame()
+        success, image = self.img_to_bytes(success, image)
+        return success, image
 
     def get_style_transfer_frame(self):
         "Style Transfer Function"
-        _, image = self.stream.read()
+        success, image = self.get_frame()
         generated_image = self.transfer_image(image)
+        success, image = self.img_to_bytes(success, generated_image)
+        return success, image
+    
+    
 
-        if self.with_recording:
-            self.recording(generated_image)
-            
-        ret, jpeg = cv2.imencode('.jpg', generated_image)  
-        data = []
-        data.append(jpeg.tobytes())
-        return _, data
 
 
 

@@ -80,7 +80,7 @@
   <!-- 这边是风格迁移功能栏 -->
 
   <!-- 功能栏占一块，避免太过突兀 -->
-  <div class="layui-col-lg12" style="height: 100px; margin: 0;">
+  <div class="layui-col-lg12" style="height: 50px; margin: 0;">
     <h1 class = "layui-anim layui-anim-scale" style="text-align: center;">Style Transfer</h1>
   </div>
 
@@ -95,21 +95,21 @@
 
       <div class="layui-col-md3"> 
         <div class="layui-btn-container" style="height: auto; text-align: left;">  
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="mosaic" onclick="changeStyleMosaic()">Mosaic</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="bayanihan" onclick="changeStyleBayanihan()">Bayanihan</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="lazy" onclick="changeStyleLazy()">Lazy</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="starry" onclick="changeStyleStarry()">Starry</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="tokyo_ghoul" onclick="changeStyleTokyoGhoul()">Tokyo</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="udnie" onclick="changeStyleUdnie()">Udnie</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="wave" onclick="changeStyleWave()">Wave</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="origin" onclick="switchToOrgin()">Webcam</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="mosaic" onclick="changeStyleMosaic()">mosaic</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="bayanihan" onclick="changeStyleBayanihan()">bayanihan</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="lazy" onclick="changeStyleLazy()">lazy</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="starry" onclick="changeStyleStarry()">starry</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="tokyo_ghoul" onclick="changeStyleTokyoGhoul()">tokyo</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="udnie" onclick="changeStyleUdnie()">udnie</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="wave" onclick="changeStyleWave()">wave</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="origin" onclick="switchToOrgin()">webcam</button>
         </div>
 
         <div class="layui-btn-container" style="height: auto; width: auto;">
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 50px; width: 53%;" id="recording" onclick="recordStream()">Recording</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 50px; width: 53%;" id="recording">record</button>
         </div>
         <div class="layui-btn-container" style="height: auto; width: auto;">  
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 50px; width: 53%;" id="refresh" onclick="refreshWindow()">Refresh</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 50px; width: 53%;" id="refresh" onclick="refreshWindow()">refresh</button>
         </div>
 
         <!-- <div class="layui-btn-container" style="height: auto; width: auto;">  
@@ -119,21 +119,11 @@
       </div>
     </div>
 
-    <!-- <div class="layui-col-lg12" style="height: 50px; margin: 0;"></div> -->
-
-    <!-- 第二行数据 -->
-    <!-- <div class="layui-row" style="height: 400px;">
-      <div class="layui-btn-container" style="height: auto; width: auto;">
-        <button type="button" class="layui-btn layui-btn-lg" style="height: auto; width: 20%;">背景提取</button>
-        <button type="button" class="layui-btn layui-btn-lg" style="height: auto; width: 20%;">选择</button>
-      </div>
-    </div> -->
-
-    <!-- 底边行数据 -->
   </div>
 </div> <!-- 主界面 结束 -->
 
 <script>
+
   function refreshWindow() {
     // 刷新按钮
     window.location.href = "{{ url_for('style_transfer') }}";
@@ -172,10 +162,29 @@
     docmuent.getElementById("stream").src = "{{ url_for('webcam_stream_wave')}}"
   }
 
-  function recordStream() {
-    // 录制视频
-    
-  }
+  $(document).ready(function() {
+    // 传递录制的信号给后端
+    $('#recording').on('click', function(){
+      var withRecord = '';
+      if (document.getElementById("recording").innerHTML == 'record') {
+        withRecord = 'True';
+        document.getElementById("recording").innerHTML = 'recording';
+      }
+      else {
+        withRecord = 'False';
+        document.getElementById('recording').innerHTML = 'record';
+      }
+
+      req = $.ajax({
+          url : '/update',
+          type : 'POST',
+          data: { with_record : withRecord}
+        });
+        req.done(function(data){
+        });
+      
+    });
+  });
 
 </script>
 </body>
