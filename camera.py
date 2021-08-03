@@ -71,9 +71,7 @@ class VideoCamera(object):
         self.recording_index += 1
 
     def __del__(self):
-        # print(self.style)
-        # print('*************************************')
-        # self.stream.stop()
+        print('Camera Released !')
         self.stream.release()
 
     def transfer_image(self, image):

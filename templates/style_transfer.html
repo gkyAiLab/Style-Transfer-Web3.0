@@ -70,8 +70,10 @@
   <!-- 这边是风格迁移功能栏 -->
 
   <!-- 功能栏占一块，避免太过突兀 -->
-  <div class="layui-col-lg12" style="height: 50px; margin: 0;">
-    <h1 class = "layui-anim layui-anim-scale" style="text-align: center;">Style Transfer</h1>
+  <div class="layui-col-lg12" style="height: 50px; margin: 0; text-align: center;">
+    <div>
+      <h1 class = "layui-anim layui-anim-scale" style="text-align: center;">Style Transfer</h1>
+    </div>
   </div>
 
   <div class="layui-container">  
@@ -85,14 +87,15 @@
 
       <div class="layui-col-md3"> 
         <div class="layui-btn-container" style="height: auto; text-align: left;">  
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="mosaic" onclick="changeStyleMosaic()">mosaic</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="mosaic">mosaic</button>
           <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="bayanihan" onclick="changeStyleBayanihan()">bayanihan</button>
           <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="lazy" onclick="changeStyleLazy()">lazy</button>
           <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="starry" onclick="changeStyleStarry()">starry</button>
           <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="tokyo_ghoul" onclick="changeStyleTokyoGhoul()">tokyo</button>
           <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="udnie" onclick="changeStyleUdnie()">udnie</button>
           <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="wave" onclick="changeStyleWave()">wave</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="origin" onclick="switchToOrgin()">webcam</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="webcam">Open Webcam</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="test">test button</button>
         </div>
 
         <div class="layui-btn-container" style="height: auto; width: auto;">
@@ -119,7 +122,7 @@
     window.location.href = "{{ url_for('style_transfer') }}";
   }
 
-  function switchToOrgin() {
+  function openWebcam() {
     // 不对数据流进行任何的处理
     document.getElementById("stream").src = "{{ url_for('webcam_stream')}}"; 
   }
@@ -152,8 +155,8 @@
     docmuent.getElementById("stream").src = "{{ url_for('webcam_stream_wave')}}"
   }
 
+  // 录制的开关
   $(document).ready(function() {
-    // 传递录制的信号给后端
     $('#recording').on('click', function(){
       var withRecord = '';
       if (document.getElementById("recording").innerHTML == 'record') {
@@ -169,12 +172,68 @@
           url : '/update',
           type : 'POST',
           data: { with_record : withRecord}
-        });
-        req.done(function(data){
-        });
-      
+      });
+      req.done(function(data){
+      });
     });
   });
+
+  // 摄像头的开关
+  $(document).ready(function() {
+    $('#webcam').on('click', function() {
+
+      var withOpenWebcam = '';
+      if (document.getElementById("webcam").innerHTML == 'Open Webcam') {
+        withOpenWebcam = 'True';
+        document.getElementById("webcam").innerHTML = 'Close Webcam';
+        document.getElementById("stream").src = "{{ url_for('webcam_stream')}}"; 
+      }
+      else {
+        withOpenWebcam = 'False';
+        document.getElementById('webcam').innerHTML = 'Open Webcam';
+        document.getElementById("stream").src = "static/images/sunflower.jpg";
+        // window.location.href = "{{ url_for('style_transfer') }}";
+      }
+
+      req = $.ajax({
+          url : '/update',
+          type : 'POST',
+          data: { with_webcam : withOpenWebcam}
+      });
+      req.done(function(data){
+      });
+    });
+  });
+
+  // 选择对应的风格
+  $(document).ready(function() {
+    $('#mosaic').on('click', function() {
+      var withTransferStyle = 'True';
+      var transferStyle = 'mosaic';
+      var changeModel = 'True';
+
+      req = $.ajax({
+          url : '/update',
+          type : 'POST',
+          data: { with_style : withTransferStyle, transfer_style:transferStyle, change_model:changeModel}
+      });
+      req.done(function(data){
+      });
+    });
+  });
+
+  // 接收后端给的信号
+  // $.getJSON('/update_flask_state', function(data) {
+      //   var withWebcam = data.with_webcam;
+        
+      //   if (withWebcam != "true"){
+      //     // $('#stream').src = "{{url_for('webcam_stream')}}";
+      //     document.getElementById("stream").src = "{{ url_for('webcam_stream')}}"; 
+      //   } else {
+      //     window.location.href = "{{ url_for('style_transfer') }}";
+      //   }
+      //   document.getElementById('test').innerHTML = withWebcam;
+      // });
 
 </script>
 </body>
