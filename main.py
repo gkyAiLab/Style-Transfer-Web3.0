@@ -38,8 +38,8 @@ def gen(camera):
         else:
             break
 
-@app.route('/')
-def home_page():
+@app.route('/home')
+def home():
     return render_template("home.html")
 
 @app.route('/style_transfer')
@@ -50,6 +50,10 @@ def style_transfer():
 def webcam_stream():
     state.with_style = False
     return Response(gen(VideoCamera()), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/TODO')
+def TODO():
+    return "TODO"
 
 @app.route('/webcam_stream_mosaic')
 def webcam_stream_mosaic():
