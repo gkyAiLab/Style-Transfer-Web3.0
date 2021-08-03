@@ -18,7 +18,7 @@ Most of the codes here assume that the user have access to CUDA capable GPU, at 
 **`main.py`**: Running on 'http://127.0.0.1:xxxx/'. Clicked the url and the website will be shown on the browser.
 
 <p align = 'center'>
-<img src = './static/images/homepage.jpg' height = '350px'>
+<img src = './static/images/homepage.png' height = '350px'>
 </p>
 
 ```
