@@ -30,19 +30,6 @@
       <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">
         <i class="layui-icon layui-icon-spread-left"></i>
       </li>
-      
-      <!-- <li class="layui-nav-item layui-hide-xs"><a href="">nav 1</a></li>
-      <li class="layui-nav-item layui-hide-xs"><a href="">nav 2</a></li>
-      <li class="layui-nav-item layui-hide-xs"><a href="">nav 3</a></li> -->
-
-      <!-- <li class="layui-nav-item">
-        <a href="javascript:;">nav groups<i class="layui-icon layui-icon-down layui-nav-more"></i></a>
-        <dl class="layui-nav-child layui-anim layui-anim-upbit">
-          <dd><a href="">menu 11</a></dd>
-          <dd><a href="">menu 22</a></dd>
-          <dd><a href="">menu 33</a></dd>
-        </dl>
-      </li> -->
   </div>    
 
 <!-- 侧边栏 -->
@@ -90,29 +77,23 @@
           <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="mosaic">mosaic</button>
           <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="bayanihan">bayanihan</button>
           <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="lazy">lazy</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="starry">starry</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="tokyo_ghoul">tokyo</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="udnie">udnie</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="wave">wave</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="webcam">Open Webcam</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="starry">starry</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="tokyo_ghoul">tokyo</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="udnie">udnie</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="wave">wave</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-btn-danger layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="webcam">Open Webcam</button>
         </div>
 
         <div class="layui-btn-container" style="height: auto; width: auto;">
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 50px; width: 53%;" id="recordButton">record</button>
+          <button type="button" class="layui-btn layui-btn-normal layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="recordButton">record</button>
         </div>
 
       </div>
     </div>
-
-    <div class="layui-row" style="height: 100;">
-      <span id='test_state'></span>
-    </div>
-
   </div>
 </div> <!-- 主界面 结束 -->
 
 <script>
-
   // 录制的开关
   $(document).ready(function() {
     $('#recording').on('click', function(){
@@ -170,50 +151,62 @@
         });
       } else if ($(this).attr("id").toString() == 'recordButton') {
         // 如果点击的是录制按钮
-        var withRecord = '';
-        if (document.getElementById("recordButton").innerHTML == 'record') {
-          withRecord = 'True';
-          document.getElementById("recordButton").innerHTML = 'recording';
-        }
-        else {
-          withRecord = 'False';
-          document.getElementById('recordButton').innerHTML = 'record';
-        }
+        // 在打开录制功能之前，检查摄像头是否打开
+        $.getJSON('/update_flask_state', function(data) {
+          var withWebcam = data.with_webcam.toString();  // 检查webcam的状态
 
-        req = $.ajax({
-            url : '/update',
-            type : 'POST',
-            data: { with_record : withRecord}
-        });
-        req.done(function(data){
+          if (withWebcam != "true"){
+            // 如何摄像头还没有打开，提醒用户打开摄像头
+            alert("Please open webcam !!")
+          } else {
+            // var transferStyle = document.getElementById('mosaic').innerHTML.toString();
+            var withRecord = '';
+            if (document.getElementById("recordButton").innerHTML == 'record') {
+              withRecord = 'True';
+              document.getElementById("recordButton").innerHTML = 'recording';
+              // document.getElementById("recordButton").style = "";  // 尝试改变一下button的风格
+            }
+            else {
+              withRecord = 'False';
+              document.getElementById('recordButton').innerHTML = 'record';
+            }
+
+            req = $.ajax({
+                url : '/update',
+                type : 'POST',
+                data: { with_record : withRecord}
+            });
+            req.done(function(data){ });
+          }
         });
 
       } else {
         // 如果点击的是风格迁移按钮
-
         // 点击其余供能之前应该检查是否打开了摄像头
         // 从后端提取状态信息
-        
 
-
-        // var transferStyle = document.getElementById('mosaic').innerHTML.toString();
         var withTransferStyle = 'True';
         var transferStyle = $(this).attr("id").toString();
         var changeModel = 'True';
 
-        document.getElementById('test_state').innerHTML = transferStyle.toString();  // 改变对应的状态
+        $.getJSON('/update_flask_state', function(data) {
+          var withWebcam = data.with_webcam.toString();  // 检查webcam的状态
 
-        req = $.ajax({
-            url : '/update',
-            type : 'POST',
-            data: { 
-              with_style : withTransferStyle, 
-              change_model : changeModel, 
-              transfer_style : transferStyle}  
+          if (withWebcam != "true"){
+            // 如何摄像头还没有打开，提醒用户打开摄像头
+            alert("Please open webcam !!")
+          } else {
+            req = $.ajax({
+              url : '/update',
+              type : 'POST',
+              data: { 
+                with_style : withTransferStyle, 
+                change_model : changeModel, 
+                transfer_style : transferStyle}  
+              });
+            req.done(function(data){});
+          }
         });
-        req.done(function(data){
-        });
-      
       }
     });
   });

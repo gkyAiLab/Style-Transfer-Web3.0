@@ -39,7 +39,6 @@ def gen(camera):
         else:
             camera.recording_end()  # 结束录制
             # 合成视频、生成二维码 TODO
-            # 清除缓冲区 TODO
 
         if success:
             frame = data[0]
@@ -56,6 +55,7 @@ def home():
 def style_transfer():
     print('Enter style transfer page!!')
     state.refresh() # 更新状态变量
+    state.clear_video_frames() # 删除之前保存的视频帧
     return render_template('style_transfer.html')
 
 @app.route('/webcam_stream')
@@ -117,6 +117,7 @@ def update():
                 state.with_style = False
             return jsonify({'with_style' : with_style})
         except:
+            print('Load style transfer button: False !!')
             with_style = state.with_style
         
 # 后端的状态反馈给前端

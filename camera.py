@@ -9,7 +9,7 @@ class VideoCamera(object):
         self.with_camera = False
         self.style = style  # choose a style or origin webcam stream
         self.init_camera()
-        self.recording_init()
+        self.remove_video_frames()
         self.init_style_transfer(style)
     
     def init_style_transfer(self, style):
@@ -41,12 +41,14 @@ class VideoCamera(object):
         self.recording_index = 0
         self.stream.release()
 
-    def recording_init(self):
-        # init recording path
+    # 输出所有之前录制的视频帧
+    def remove_video_frames(self):
         self.with_recording = False
         self.recording_index = 0
         self.recording_video_path = os.path.join(os.getcwd(), 'video')
         self.recording_video_frames = os.path.join(self.recording_video_path, 'buffer')
+
+        print('video buffer: ', self.recording_video_frames)
 
         if not os.path.exists(self.recording_video_frames):
             os.mkdir(self.recording_video_frames)
@@ -55,7 +57,10 @@ class VideoCamera(object):
         for file in file_list:
             frame = os.path.join(self.recording_video_path, file)
             if os.path.exists(frame):
+                print("{} has been removed.".format(frame))
                 os.remove(frame)
+
+        print('All Frames have been removed !!')
 
     def recording_end(self):
         # recording End
@@ -71,7 +76,7 @@ class VideoCamera(object):
         self.recording_index += 1
 
     def __del__(self):
-        print('Camera Released !')
+        print('Camera Released Successful !!')
         self.stream.release()
 
     def transfer_image(self, image):
@@ -106,6 +111,8 @@ class VideoCamera(object):
         generated_image = self.transfer_image(image)
         success, image = self.img_to_bytes(success, generated_image)
         return success, image
+    
+
     
     
 
