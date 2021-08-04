@@ -68,7 +68,7 @@
     <div class="layui-row" style="height: 400px;">
 
       <div class="layui-col-md2">
-        <div class="layui-btn-container" style="height: auto; text-align: right;">
+        <div class="layui-btn-container" style="height: auto; text-align: left;">
           <button type="button" class="layui-btn layui-btn-normal layui-anim layui-anim-scale" style="height: 40px; width: 85%; text-align: center;" id="startMatting">Init Matting</button>
           <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 85%; text-align: center;" id="no_matting">No Background</button>
           <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 85%; text-align: center;" id="background1">Background1</button>
@@ -78,7 +78,7 @@
       </div>
 
       <div class="layui-col-md8">
-        <div style="height: 400px; text-align: center;">
+        <div style="height: 400px; text-align: left;">
           <img src = "static/images/sunflower.jpg" id="stream" style="height: 120%; width: 85%;" class="layui-anim layui-anim-scale">
         </div>
       </div>
@@ -99,8 +99,19 @@
           <button type="button" class="layui-btn layui-btn-normal layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="recordButton">record</button>
         </div>
 
+        <div class="layui-btn-container" style="height: 200px; text-align: left;">
+          <img src = "static/images/sunflower.jpg" id="qrcode" style="height: 75%; width: 80%;" class="layui-anim layui-anim-scale">
+          <!-- <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="test"></button> -->
+        </div>
+          
+        <div>
+          <button type="button" class="layui-btn layui-btn-lg layui-btn-warm layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="Display_QR_code"></button>
+        </div>
+
       </div>
     </div>
+  
+
   </div>
 </div> <!-- 主界面 结束 -->
 
@@ -172,7 +183,7 @@
 
         $.getJSON('/update_flask_state', function(data) {
           var withWebcam = data.with_webcam.toString();  // 检查webcam的状态
-
+          
           if (withWebcam != "true"){
             // 如何摄像头还没有打开，提醒用户打开摄像头
             alert("Please open webcam !!")
@@ -195,6 +206,21 @@
           }
         });
 
+      } else if ($(this).attr("id").toString() == 'Display_QR_code') {
+        
+        $.getJSON('/update_flask_state', function(data) {
+          var videoComplete = data.video_complete.toString();
+
+          if (videoComplete == "true") {
+            alert('Video Complete!');
+            document.getElementById("qrcode").src = 'static/qrcode/qrcode_out.png';
+            $("#qrcode").src = 'static/qrcode/qrcode_out.png';
+          } else {
+            alert('Please record First !');
+          }
+
+        });
+ 
       } else {
         // 如果点击的是风格迁移按钮
         // 点击其余供能之前应该检查是否打开了摄像头
@@ -205,7 +231,6 @@
 
         $.getJSON('/update_flask_state', function(data) {
           var withWebcam = data.with_webcam.toString();  // 检查webcam的状态
-
           if (withWebcam != "true"){
             // 如何摄像头还没有打开，提醒用户打开摄像头
             alert("Please open webcam !!")
@@ -226,17 +251,28 @@
   });
 
   // 接收后端给的信号
-  // $.getJSON('/update_flask_state', function(data) {
-      //   var withWebcam = data.with_webcam;
-        
-      //   if (withWebcam != "true"){
-      //     // $('#stream').src = "{{url_for('webcam_stream')}}";
-      //     document.getElementById("stream").src = "{{ url_for('webcam_stream')}}"; 
-      //   } else {
-      //     window.location.href = "{{ url_for('style_transfer') }}";
-      //   }
-      //   document.getElementById('test').innerHTML = withWebcam;
-      // });
+  // $(document).ready(function() {
+  //   $.getJSON('/update_flask_state', function(data) {
+  //   var videoComplete = data.video_complete;    
+
+  //   if (videoComplete == "true"){
+  //     document.getElementById("test").innerHTML = "video complete!";
+  //     alert('video complete !');
+
+  //     document.getElementById("qrcode").src = 'static/qrcode/qrcode_out.png';
+
+  //     videoComplete = 'False';  // 信号传递结束后，改状态为False传递给后端
+  //     req = $.ajax({
+  //       url : '/update',
+  //       type : 'POST',
+  //       data: { 
+  //         video_complete : videoComplete }  
+  //     });
+  //     req.done(function(data){});
+  //     } else { }
+  //   });
+  // });
+  
 
 </script>
 </body>

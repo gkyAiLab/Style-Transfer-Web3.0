@@ -22,6 +22,8 @@ class Config():
         video_frames_buffer = os.path.join(work_dir, 'video')
         self.video_frames_buffer = os.path.join(video_frames_buffer, 'buffer')
 
+        self.video_complete = True  # 视频是否合成
+
     def refresh(self):
         # 刷新状态
         self.with_webcam = False
@@ -32,6 +34,8 @@ class Config():
 
         self.matting_init = False
         self.with_matting = False  
+
+        self.video_complete = False
     
     # 删除所有的视频帧
     def clear_video_frames(self):
@@ -50,5 +54,24 @@ class Config():
         if os.path.exists(matting_image_name):
             os.remove(matting_image_name)
             print("{} has been removed.".format(matting_image_name))
+    
+    # 删除二维码
+    def clear_qrcode(self):
+        qrcode_path = os.path.join(os.getcwd(), 'static')
+        qrcode_path = os.path.join(qrcode_path, 'qrcode')
+        file_list = os.listdir(qrcode_path)
+
+        for file in file_list:
+            frame = os.path.join(qrcode_path, file)
+            if os.path.exists(frame):
+                print("{} has been removed.".format(frame))
+                os.remove(frame)
+
+    # def clear_videos(self):
+    #     video_path = os.path.join(os.getcwd(), 'video')
+    #     video_list = os.listdir(video_path)
+    #     for file in video_list:
+    #         file_end = file.split('.')[1]
+    #         if file
 
 

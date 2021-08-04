@@ -1,7 +1,9 @@
+from genericpath import exists
 from camera import VideoCamera
-from flask import Flask, render_template, request, jsonify, Response,  redirect, url_for
+from flask import Flask, render_template, request, jsonify, Response, redirect, url_for
 import cv2, os
 from config import Config
+from GenerateQrcode import Gnerate_qrcode
 
 app = Flask(__name__)
 state = Config() 
@@ -21,10 +23,6 @@ def gen(camera):
             cv2.imwrite(matting_frame_name, frame)
             state.matting_init = False # 初始化后就把初始化信号更新
 
-
-
-
-
         # 是否使用风格迁移
         if state.with_style == False:
             success, data = camera.img_to_bytes(success, frame)
@@ -40,12 +38,15 @@ def gen(camera):
         if state.with_record == True:
             image_name_index = "{:08d}.png".format(camera.recording_index)
             image_name = os.path.join(camera.recording_video_frames, image_name_index)
-            print('image_name： ', image_name)
+            print('image_name：', image_name)
             cv2.imwrite(image_name, frame)
             camera.recording_index += 1
         else:
             camera.recording_end()  # 结束录制
-            # 合成视频、生成二维码 TODO
+            
+            if state.video_complete != True: # 如果视频还没有合成好，就合成一次
+                Gnerate_qrcode(state.video_frames_buffer) # 合成视频、生成二维码、改变状态变量
+                state.video_complete = True # 告诉前端，视频已经合成好了
 
         if success:
             frame = data[0]
@@ -64,11 +65,20 @@ def style_transfer():
     state.refresh() # 更新状态变量
     state.clear_video_frames() # 删除之前保存的视频帧
     state.clear_matting_image() # 删除所有抠图初始化的图像
+    state.clear_qrcode()  # 删除二维码
+
     return render_template('style_transfer.html')
 
 @app.route('/webcam_stream')
 def webcam_stream():
     return Response(gen(VideoCamera()), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+# @app.route('/get_qrcode')
+# def get_qrcode():
+#     qrcode_image = cv2.imread('./static/qrcode/qrcode_out.png')
+#     ret, jpeg = cv2.imencode('.jpg', qrcode_image)
+#     frame = jpeg.tobytes()
+
 
 @app.route('/update', methods=['POST'])
 def update():  
@@ -81,8 +91,10 @@ def update():
                 state.with_record = True
             else:
                 state.with_record = False
+                state.video_complete = False
 
             print('with_record: ', with_record)
+            print('video complete: ', state.video_complete)
             return jsonify({'with_record' : with_record})
         except:
             with_record = state.with_record
@@ -136,6 +148,15 @@ def update():
             return jsonify({'matting_init' : matting_init})
         except:
             matting_init = state.matting_init
+        
+        # 接收视频二维码上传信号
+        try:
+            video_complete = request.form['video_complete']
+            state.video_complete = video_complete
+            print('video complete: ', state.video_complete)
+            return jsonify({'video_complete' : video_complete})
+        except:
+            video_complete = state.video_complete
 
 
 # 后端的状态反馈给前端
@@ -144,6 +165,7 @@ def update_flask_state():
     state_dict = {
         'with_webcam' : state.with_webcam,
         'with_style' : state.with_style,
+        'video_complete' : state.video_complete
     }
     return jsonify(state_dict)
 
