@@ -10,14 +10,23 @@ app = Flask(__name__)
 state = Config() 
 
 def gen(camera):
+    # 这个是主要功能，返回给路由视频帧
     while True:
+        # 检测当前是否打开了摄像头
         if state.with_webcam == False:
             break
-
+        
+        # 从摄像头获取每一帧
         success, frame = camera.get_frame()
+
         if state.with_style == False:
             success, data = camera.img_to_bytes(success, frame)
         else:
+            # 检测模型是否改变，改变了的话就重新加载一下预训练模型
+            if state.change_style_model == True:
+                camera.init_style_transfer(state.sytle_model)
+                state.change_style_model = False
+
             frame = camera.transfer_image(frame)
             success, data = camera.img_to_bytes(success, frame)
         
@@ -31,6 +40,7 @@ def gen(camera):
             camera.recording_end()  # 结束录制
             # 合成视频、生成二维码 TODO
             # 清除缓冲区 TODO
+
         if success:
             frame = data[0]
             yield (b'--frame\r\n'
@@ -44,58 +54,19 @@ def home():
 
 @app.route('/style_transfer')
 def style_transfer():
+    print('Enter style transfer page!!')
+    state.refresh() # 更新状态变量
     return render_template('style_transfer.html')
 
 @app.route('/webcam_stream')
 def webcam_stream():
     return Response(gen(VideoCamera()), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/webcam_stream_mosaic')
-def webcam_stream_mosaic():
-    state.with_style = True
-    style = 'mosaic'
-    if state.with_webcam:
-        return Response(gen(VideoCamera(style)), mimetype='multipart/x-mixed-replace; boundary=frame')
-    else:
-        return "Please Open Webcam !"
-
-@app.route('/webcam_stream_bayanihan')
-def webcam_stream_bayanihan():
-    style = 'bayanihan'
-    if state.with_webcam:
-        return Response(get_style_transfer_image(VideoCamera(style)), mimetype='multipart/x-mixed-replace; boundary=frame')
-    else:
-        return "Please Open Webcam !"
-
-@app.route('/webcam_stream_lazy')
-def webcam_stream_lazy():
-    style = 'lazy'
-    return Response(get_style_transfer_image(VideoCamera(style)), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-@app.route('/webcam_stream_starry')
-def webcam_stream_starry():
-    style = 'starry'
-    return Response(get_style_transfer_image(VideoCamera(style)), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-@app.route('/webcam_stream_tokyo_ghoul')
-def webcam_stream_tokyo_ghoul():
-    style = 'tokyo_ghoul'
-    return Response(get_style_transfer_image(VideoCamera(style)), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-@app.route('/webcam_stream_udnie')
-def webcam_stream_udnie():
-    style = 'udnie'
-    return Response(get_style_transfer_image(VideoCamera(style)), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-@app.route('/webcam_stream_wave')
-def webcam_stream_wave():
-    style = 'wave'
-    return Response(get_style_transfer_image(VideoCamera(style)), mimetype='multipart/x-mixed-replace; boundary=frame')
-
 @app.route('/update', methods=['POST'])
 def update():  
     # 修改配置文件功能：录制，转换风格
     if request.method == 'POST':
+        # 接收录制的信号
         try:
             with_record = request.form['with_record']
             if with_record == 'True':
@@ -108,6 +79,7 @@ def update():
         except:
             with_record = state.with_record
 
+        # 接收是否打开摄像头的信号
         try:
             with_webcam = request.form['with_webcam']
             if with_webcam == 'True':
@@ -120,6 +92,7 @@ def update():
         except:
             with_webcam = state.with_webcam
         
+        # 接收改变风格的信号
         try:
             with_style = request.form['with_style']
             style_model = request.form['transfer_style']
@@ -146,9 +119,9 @@ def update():
         except:
             with_style = state.with_style
         
+# 后端的状态反馈给前端
 @app.route('/update_flask_state')
 def update_flask_state():
-    # 后端的状态反馈给前端
     state_dict = {
         'with_webcam' : state.with_webcam,
         'with_style' : state.with_style,

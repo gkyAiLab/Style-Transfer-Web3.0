@@ -88,28 +88,24 @@
       <div class="layui-col-md3"> 
         <div class="layui-btn-container" style="height: auto; text-align: left;">  
           <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="mosaic">mosaic</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="bayanihan" onclick="changeStyleBayanihan()">bayanihan</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="lazy" onclick="changeStyleLazy()">lazy</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="starry" onclick="changeStyleStarry()">starry</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="tokyo_ghoul" onclick="changeStyleTokyoGhoul()">tokyo</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="udnie" onclick="changeStyleUdnie()">udnie</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="wave" onclick="changeStyleWave()">wave</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="bayanihan">bayanihan</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="lazy">lazy</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="starry">starry</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="tokyo_ghoul">tokyo</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="udnie">udnie</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="wave">wave</button>
           <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="webcam">Open Webcam</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%;" id="test">test button</button>
         </div>
 
         <div class="layui-btn-container" style="height: auto; width: auto;">
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 50px; width: 53%;" id="recording">record</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 50px; width: 53%;" id="recordButton">record</button>
         </div>
-        <div class="layui-btn-container" style="height: auto; width: auto;">  
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 50px; width: 53%;" id="refresh" onclick="refreshWindow()">refresh</button>
-        </div>
-
-        <!-- <div class="layui-btn-container" style="height: auto; width: auto;">  
-          <button type="button" class="layui-btn layui-btn-lg" style="height: 50px; width: 53%;" id="closeCam" onclick="closeCamera()">打开摄像头</button>
-        </div> -->
 
       </div>
+    </div>
+
+    <div class="layui-row" style="height: 100;">
+      <span id='test_state'></span>
     </div>
 
   </div>
@@ -117,47 +113,10 @@
 
 <script>
 
-  function refreshWindow() {
-    // 刷新按钮
-    window.location.href = "{{ url_for('style_transfer') }}";
-  }
-
-  function openWebcam() {
-    // 不对数据流进行任何的处理
-    document.getElementById("stream").src = "{{ url_for('webcam_stream')}}"; 
-  }
-    // 改变各种各样的风格 
-  function changeStyleMosaic() {
-    document.getElementById("stream").src = "{{ url_for('webcam_stream_mosaic')}}";
-  }
-
-  function changeStyleBayanihan() {
-    document.getElementById("stream").src = "{{ url_for('webcam_stream_bayanihan')}}";
-  }
-
-  function changeStyleLazy() {
-    document.getElementById("stream").src = "{{ url_for('webcam_stream_lazy')}}";
-  }
-
-  function changeStyleStarry() {
-    document.getElementById("stream").src = "{{ url_for('webcam_stream_starry') }}"
-  }
-
-  function changeStyleTokyoGhoul() {
-    document.getElementById("stream").src = "{{ url_for('webcam_stream_tokyo_ghoul')}}"
-  }
-
-  function changeStyleUdnie() {
-    document.getElementById("stream").src = "{{ url_for('webcam_stream_udnie') }}"
-  }
-
-  function changeStyleWave() {
-    docmuent.getElementById("stream").src = "{{ url_for('webcam_stream_wave')}}"
-  }
-
   // 录制的开关
   $(document).ready(function() {
     $('#recording').on('click', function(){
+
       var withRecord = '';
       if (document.getElementById("recording").innerHTML == 'record') {
         withRecord = 'True';
@@ -178,47 +137,84 @@
     });
   });
 
-  // 摄像头的开关
-  $(document).ready(function() {
-    $('#webcam').on('click', function() {
-
-      var withOpenWebcam = '';
-      if (document.getElementById("webcam").innerHTML == 'Open Webcam') {
-        withOpenWebcam = 'True';
-        document.getElementById("webcam").innerHTML = 'Close Webcam';
-        document.getElementById("stream").src = "{{ url_for('webcam_stream')}}"; 
-      }
-      else {
-        withOpenWebcam = 'False';
-        document.getElementById('webcam').innerHTML = 'Open Webcam';
-        document.getElementById("stream").src = "static/images/sunflower.jpg";
-        // window.location.href = "{{ url_for('style_transfer') }}";
-      }
-
-      req = $.ajax({
-          url : '/update',
-          type : 'POST',
-          data: { with_webcam : withOpenWebcam}
-      });
-      req.done(function(data){
-      });
-    });
-  });
-
   // 选择对应的风格
   $(document).ready(function() {
-    $('#mosaic').on('click', function() {
-      var withTransferStyle = 'True';
-      var transferStyle = 'mosaic';
-      var changeModel = 'True';
+    $('button').on('click', function() {
+      // 如果发现是摄像头开启按钮 
+      if ($(this).attr("id").toString() == 'webcam') {
+        var withOpenWebcam = '';
+        if (document.getElementById("webcam").innerHTML == 'Open Webcam') {
+          withOpenWebcam = 'True';
+          document.getElementById("webcam").innerHTML = 'Close Webcam';
+          document.getElementById("stream").src = "{{ url_for('webcam_stream')}}"; 
+        }
+        else {
+          withOpenWebcam = 'False';
+          document.getElementById('webcam').innerHTML = 'Open Webcam';
+          document.getElementById("stream").src = "static/images/sunflower.jpg";
+          // window.location.href = "{{ url_for('style_transfer') }}";
+        }
 
-      req = $.ajax({
-          url : '/update',
-          type : 'POST',
-          data: { with_style : withTransferStyle, transfer_style:transferStyle, change_model:changeModel}
-      });
-      req.done(function(data){
-      });
+        var changeModel = 'False';
+        var withTransferStyle = 'False';
+        req = $.ajax({
+            url : '/update',
+            type : 'POST',
+            data: { 
+              with_webcam : withOpenWebcam,
+              with_style : withTransferStyle, 
+              change_model : changeModel, 
+            }
+        });
+        req.done(function(data){
+        });
+      } else if ($(this).attr("id").toString() == 'recordButton') {
+        // 如果点击的是录制按钮
+        var withRecord = '';
+        if (document.getElementById("recordButton").innerHTML == 'record') {
+          withRecord = 'True';
+          document.getElementById("recordButton").innerHTML = 'recording';
+        }
+        else {
+          withRecord = 'False';
+          document.getElementById('recordButton').innerHTML = 'record';
+        }
+
+        req = $.ajax({
+            url : '/update',
+            type : 'POST',
+            data: { with_record : withRecord}
+        });
+        req.done(function(data){
+        });
+
+      } else {
+        // 如果点击的是风格迁移按钮
+
+        // 点击其余供能之前应该检查是否打开了摄像头
+        // 从后端提取状态信息
+        
+
+
+        // var transferStyle = document.getElementById('mosaic').innerHTML.toString();
+        var withTransferStyle = 'True';
+        var transferStyle = $(this).attr("id").toString();
+        var changeModel = 'True';
+
+        document.getElementById('test_state').innerHTML = transferStyle.toString();  // 改变对应的状态
+
+        req = $.ajax({
+            url : '/update',
+            type : 'POST',
+            data: { 
+              with_style : withTransferStyle, 
+              change_model : changeModel, 
+              transfer_style : transferStyle}  
+        });
+        req.done(function(data){
+        });
+      
+      }
     });
   });
 
