@@ -66,26 +66,37 @@
   <div class="layui-container">  
     <!-- 第一行数据 包括图片和 一些按钮 -->
     <div class="layui-row" style="height: 400px;">
-      <div class="layui-col-md9">
+
+      <div class="layui-col-md2">
+        <div class="layui-btn-container" style="height: auto; text-align: right;">
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 70%; text-align: center;" id="start_matting">start matting</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 70%; text-align: center;" id="no_matting">no matting</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 70%; text-align: center;" id="bg1">bg1</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 70%; text-align: center;" id="bg2">bg2</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 70%; text-align: center;" id="bg3">bg3</button>
+        </div>
+      </div>
+
+      <div class="layui-col-md8">
         <div style="height: 400px; text-align: center;">
           <img src = "static/images/sunflower.jpg" id="stream" style="height: 120%; width: 75%;" class="layui-anim layui-anim-scale">
         </div>
       </div>
 
-      <div class="layui-col-md3"> 
+      <div class="layui-col-md2"> 
         <div class="layui-btn-container" style="height: auto; text-align: left;">  
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="mosaic">mosaic</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="bayanihan">bayanihan</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="lazy">lazy</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="starry">starry</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="tokyo_ghoul">tokyo</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="udnie">udnie</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="wave">wave</button>
-          <button type="button" class="layui-btn layui-btn-lg layui-btn-danger layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="webcam">Open Webcam</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="mosaic">mosaic</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="bayanihan">bayanihan</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="lazy">lazy</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="starry">starry</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="tokyo_ghoul">tokyo</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="udnie">udnie</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="wave">wave</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-btn-danger layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="webcam">Open Webcam</button>
         </div>
 
         <div class="layui-btn-container" style="height: auto; width: auto;">
-          <button type="button" class="layui-btn layui-btn-normal layui-anim layui-anim-scale" style="height: 40px; width: 53%; text-align: center;" id="recordButton">record</button>
+          <button type="button" class="layui-btn layui-btn-normal layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="recordButton">record</button>
         </div>
 
       </div>
