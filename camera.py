@@ -40,7 +40,7 @@ class VideoCamera(object):
         self.with_recording = False
         self.recording_index = 0
         self.stream.release()
-
+        
     # 输出所有之前录制的视频帧
     def remove_video_frames(self):
         self.with_recording = False
@@ -111,13 +111,3 @@ class VideoCamera(object):
         generated_image = self.transfer_image(image)
         success, image = self.img_to_bytes(success, generated_image)
         return success, image
-    
-
-    
-    
-
-
-
-
-        
-        

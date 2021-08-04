@@ -1,9 +1,6 @@
-import json, time
 from camera import VideoCamera
 from flask import Flask, render_template, request, jsonify, Response,  redirect, url_for
-import requests
-import base64, cv2, os
-from utils import get_webcam_image, get_style_transfer_image
+import cv2, os
 from config import Config
 
 app = Flask(__name__)
@@ -15,10 +12,20 @@ def gen(camera):
         # 检测当前是否打开了摄像头
         if state.with_webcam == False:
             break
-        
+
         # 从摄像头获取每一帧
         success, frame = camera.get_frame()
 
+        if state.matting_init:
+            matting_frame_name = os.path.join(state.matting_background, 'matting_backgroud.png')
+            cv2.imwrite(matting_frame_name, frame)
+            state.matting_init = False # 初始化后就把初始化信号更新
+
+
+
+
+
+        # 是否使用风格迁移
         if state.with_style == False:
             success, data = camera.img_to_bytes(success, frame)
         else:
@@ -56,6 +63,7 @@ def style_transfer():
     print('Enter style transfer page!!')
     state.refresh() # 更新状态变量
     state.clear_video_frames() # 删除之前保存的视频帧
+    state.clear_matting_image() # 删除所有抠图初始化的图像
     return render_template('style_transfer.html')
 
 @app.route('/webcam_stream')
@@ -117,9 +125,19 @@ def update():
                 state.with_style = False
             return jsonify({'with_style' : with_style})
         except:
-            print('Load style transfer button: False !!')
+            # print('Load style transfer button: False !!')
             with_style = state.with_style
         
+        # 接收抠图的信号
+        try:
+            matting_init = request.form['matting_init']
+            state.matting_init = matting_init
+            print('state with_matting_init: ', state.matting_init)
+            return jsonify({'matting_init' : matting_init})
+        except:
+            matting_init = state.matting_init
+
+
 # 后端的状态反馈给前端
 @app.route('/update_flask_state')
 def update_flask_state():
