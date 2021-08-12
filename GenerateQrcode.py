@@ -8,6 +8,7 @@ from qiniu import Auth, put_file, BucketManager, CdnManager
 import qrcode
 import cv2
 import time
+import shutil
 
 # 云空间名称
 bucket_name = 'uhd-transfer'
@@ -21,6 +22,7 @@ q = Auth(access_key, secret_key)
 
 # 获取到当前文件的目录，并检查是否有video文件夹，如果不存在则自动新建文件
 video_path = os.path.join(os.getcwd(), 'video')
+
 if not os.path.exists(video_path):
     os.makedirs(video_path)
 
@@ -81,6 +83,7 @@ def video_encoder(video_path_name, video_out_name):
     :param video_out_name: 转码后的视频名字
     :return: 转码后的视频地址 + 视频名
     '''
+
     # 转码后视频地址 + 名字
     video_outpath = os.path.join(video_path, video_out_name)
     # print(video_outpath)
@@ -94,7 +97,7 @@ def video_encoder(video_path_name, video_out_name):
 
     return video_outpath
 
-def upload_video(video_path_name, fname):
+def upload(video_path_name, fname):
     """
     上传视频，视频的本地地址，所以就是上面函数给的视频帧生成的视频地址; 以及上传到云空间的视频名字
     """
@@ -119,31 +122,40 @@ def save_qrcode(qrcode_name, fname):
     qrcode_path = os.path.join(os.getcwd(), 'static')
     qrcode_path = os.path.join(qrcode_path, 'qrcode')
 
+    if os.path.exists(qrcode_path):
+        shutil.rmtree(qrcode_path)
+        # os.remove(qrcode_path)
+
     if not os.path.exists(qrcode_path):
         os.makedirs(qrcode_path)
     # 二维码保存在本地的完整路径
     save_qrcode_path = os.path.join(qrcode_path, qrcode_name)
     # 如果该二维码路径已经存在本地，则删除本地的二维码图片
-    if os.path.exists(save_qrcode_path):
-        os.remove(save_qrcode_path)
+    # if os.path.exists(save_qrcode_path):
+    #     os.remove(save_qrcode_path)
     # 重新保存二维码保存，可以在save_qrcode_path看到二维码图片
     qrcode_img.save(save_qrcode_path)
 
     return save_qrcode_path
 
-def Gnerate_qrcode(path):
+def Gnerate_video_qrcode(path, fps = 24, with_transfer = False):
     '''
     生成 二维码
     :param path: 视频帧保存的地址
     key: 视频名
     :return: 二维码的本地路径
     '''
+
     if filecheck(path) != 'nofile':
         # 视频文件名
         fname = 'video.mp4'
 
+        # 如果使用了风格迁移，需要改变帧率
+        if with_transfer:
+            fps = 8
+
         # 视频帧转成本地视频，video_path_name为视频路径+视频名
-        video_path_name = frame2video(24, path, fname)
+        video_path_name = frame2video(fps, path, fname)
 
         # 本地视频转码
         a = int(time.time())
@@ -153,7 +165,7 @@ def Gnerate_qrcode(path):
         video_path0 = video_encoder(video_path_name, video_out_name)
 
         # 上传视频
-        upload_video(video_path0, video_out_name)
+        upload(video_path0, video_out_name)
 
         # 生成二维码图片名称
         qrcode_name = 'qrcode_out.png'
@@ -162,9 +174,29 @@ def Gnerate_qrcode(path):
         # save_qrcode = []
         # save_qrcode = save_qrcode.append(save_qrcode_path)
 
-        return save_qrcode_path
+        return video_out_name, save_qrcode_path
+    else:
+        return False, False
+
+
+def Gnerate_picture_qrcode(path):
+    if filecheck(path) != 'nofile':
+        # 照片文件名
+        fname = 'picture.png'
+        picture_path = os.path.join(path, fname)
+
+        a = int(time.time())
+        c = time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime(a))
+        # 上传图片
+        picture_out_name = 'picture' + str(c) + '.png'
+        upload(picture_path, picture_out_name)
+
+        qrcode_name = 'qrcode' + '.png'
+        save_qrcode_picture = save_qrcode(qrcode_name, picture_out_name)
+        print(save_qrcode_picture)
     else:
         return False
+    return save_qrcode_picture
 
 def filecheck(path):
     filenum = len(os.listdir(path))  # 获得path目录下所有文件的数量
@@ -174,9 +206,11 @@ def filecheck(path):
 
 if __name__ == '__main__':
     # path = r'E:\video_picture\video'
-    path = './video/buffer'
+    video_path1 = r'E:\video_picture\video_frame'
+    # picture_path = r'E:\video_picture\picture'
     # path = r'E:\PycharmProjects\style-transfer\style-transfer-main\style_transfer_page\vidoe_buffer'
-    Gnerate_qrcode(path)
+    Gnerate_video_qrcode(video_path1)
+    # Gnerate_picture_qrcode(picture_path)
 
 
 

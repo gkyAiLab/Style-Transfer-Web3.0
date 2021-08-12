@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 引入 layui.css -->
+    <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+    <link id="layuicss-layer" rel="stylesheet" href="https://res.layui.com/layui/dist/css/modules/layer/default/layer.css?v=3.5.1" media="all">
+    <link id="layuicss-laydate" rel="stylesheet" href="https://res.layui.com/layui/dist/css/modules/laydate/default/laydate.css?v=5.3.1" media="all">
+    <link rel="stylesheet" href="//res.layui.com/layui/dist/css/layui.css?t=1626897823424" media="all">
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
+</head>
+
+<body>
+  <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+  <script src="static/js/script.js"></script>
+
+  <!-- 定义主界面 -->
+<div class="layui-layout layui-layout-admin">
+
+  <!-- 界面顶边栏 -->
+  <div class="layui-header">
+    <div class="layui-logo layui-hide-xs layui-bg-black">GKY-AILab</div>
+
+    <!-- 头部区域（可配合layui 已有的水平导航） -->
+    <ul class="layui-nav layui-layout-left">
+      <!-- 移动端显示 -->
+      <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">
+        <i class="layui-icon layui-icon-spread-left"></i>
+      </li>
+  </div>    
+
+<!-- 侧边栏 -->
+<div class="layui-side layui-bg-black">
+  <div class="layui-side-scroll">
+    <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+    <ul class="layui-nav layui-nav-tree" lay-filter="test">
+
+      <!-- 这个子菜单不会列出来 -->
+      <li class="layui-nav-item"><a href="home">Home</a></li>
+      <li class="layui-nav-item"><a href="TODO">Tutorial</a></li>
+      <li class="layui-nav-item">
+        <a href="javascript:;">Application<i class="layui-icon layui-icon-down layui-nav-more"></i></a>
+        <dl class="layui-nav-child">
+          <dd><a href="style_transfer">Style-transfer</a></dd>
+          <dd><a href="TODO">other link</a></dd>
+        </dl>
+      </li>
+    <span class="layui-nav-bar" style="top: 55px; height: 0px; opacity: 0;"></span></ul>
+  </div>
+</div>
+
+  <!-- 内容主体区域 -->
+<div class="layui-body">
+  <!-- 这边是风格迁移功能栏 -->
+
+  <!-- 功能栏占一块，避免太过突兀 -->
+  <div class="layui-col-lg12" style="height: 50px; margin: 0; text-align: center;">
+    <div>
+      <h1 class = "layui-anim layui-anim-scale" style="text-align: center;">Style Transfer</h1>
+    </div>
+  </div>
+
+  <div class="layui-container">  
+    <!-- 第一行数据 包括图片和 一些按钮 -->
+    <div class="layui-row" style="height: 400px;">
+
+      <div class="layui-col-md2">
+        <div class="layui-btn-container" style="height: auto; text-align: left;">
+          <button type="button" class="layui-btn layui-btn-normal layui-anim layui-anim-scale" style="height: 40px; width: 85%; text-align: center;" id="startMatting">Init Matting</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 85%; text-align: center;" id="no_matting">No Background</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 85%; text-align: center;" id="background1">Background1</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 85%; text-align: center;" id="background2">Background2</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 85%; text-align: center;" id="background3">Background3</button>
+        </div>
+      </div>
+
+      <div class="layui-col-md8">
+        <div style="height: 400px; text-align: left;">
+          <img src = "static/images/sunflower.jpg" id="stream" style="height: 120%; width: 85%;" class="layui-anim layui-anim-scale">
+        </div>
+      </div>
+
+      <div class="layui-col-md2"> 
+        <div class="layui-btn-container" style="height: auto; text-align: left;">  
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="mosaic">mosaic</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="bayanihan">bayanihan</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="lazy">lazy</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="starry">starry</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="tokyo_ghoul">tokyo</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="udnie">udnie</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="wave">wave</button>
+          <button type="button" class="layui-btn layui-btn-lg layui-btn-danger layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="webcam">Open Webcam</button>
+        </div>
+
+        <div class="layui-btn-container" style="height: auto; width: auto;">
+          <button type="button" class="layui-btn layui-btn-normal layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="recordButton">record</button>
+        </div>
+
+        <div class="layui-btn-container" style="height: 200px; text-align: left;">
+          <img src = "static/images/sunflower.jpg" id="qrcode" style="height: 75%; width: 80%;" class="layui-anim layui-anim-scale">
+          <!-- <button type="button" class="layui-btn layui-btn-lg layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="test"></button> -->
+        </div>
+          
+        <div>
+          <button type="button" class="layui-btn layui-btn-lg layui-btn-warm layui-anim layui-anim-scale" style="height: 40px; width: 80%; text-align: center;" id="Display_QR_code"></button>
+        </div>
+
+      </div>
+    </div>
+  
+
+  </div>
+</div> <!-- 主界面 结束 -->
+
+<script type="text/javascript" src="static/js/style_mat.js" crossorigin="anonymous" ></script>
+</body>
+</html>

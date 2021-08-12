@@ -2,42 +2,33 @@ import cv2, os
 from imutils.video import WebcamVideoStream
 import torch
 from model.style_transfer import transformer, utils
+##########matting###############
+from matting import *
+from matting.stylematting import * 
 
 class VideoCamera(object):
-    def __init__(self, style=None):
+    def __init__(self, style='None'):
         # init recording
-        self.with_camera = False
+        self.with_camera = 'False'
         self.style = style  # choose a style or origin webcam stream
         self.init_camera()
         self.remove_video_frames()
-        self.init_style_transfer(style)
+
     
-    def init_style_transfer(self, style):
-        # Load Transformer Network
-        style_transfer_model_path = 'model/style_transfer/transforms'
+    def matting(self,image):
+        print("choose one background")
+        img=matting_model.matting_step1(self,image,style_type=self.with_style) #style_type: t or f style 
+        self.init_image=image
+        return img
 
-        device = ("cuda" if torch.cuda.is_available() else "cpu")
-        self.device = device
-
-        print("Loading Transformer Network")
-        net = transformer.TransformerNetwork()
-
-        if style != None:
-            model_name = style + '.pth'
-        else:
-            model_name = 'mosaic.pth'
-        style_transform_path = os.path.join(style_transfer_model_path, model_name)
-        net.load_state_dict(torch.load(style_transform_path))
-        self.net = net.to(device)
-        print("Done Loading Transformer Network")  
 
     def init_camera(self):
-        self.with_camera = True
+        self.with_camera = 'True'
         # self.stream = WebcamVideoStream(src=0).start()
         self.stream = cv2.VideoCapture(0)
 
     def close_camera(self):
-        self.with_recording = False
+        self.with_recording = 'False'
         self.recording_index = 0
         self.stream.release()
         
